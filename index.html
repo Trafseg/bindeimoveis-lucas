@@ -123,9 +123,6 @@ const track=(...args)=>{if(window.fbq)fbq(...args);};
 const cookie=name=>(document.cookie.match('(?:^|; )'+name+'=([^;]*)')||[])[1]||'';
 // Origem do lead: parâmetros de URL do anúncio da Meta (utm_content={{ad.name}} = imóvel anunciado)
 const URL_PARAMS=new URLSearchParams(location.search);
-// Nome amigável do imóvel na mensagem do WhatsApp, pelo código do anúncio (a planilha recebe o nome técnico completo)
-const IMOVEIS={AD1:'Apartamento decorado em Porto Alegre',AD2:'Apartamento na Zona Norte (Av. Baltazar)',AD3:'Apartamento na Av. Vitor Hugo',AD4:'Apartamento na Zona Norte'};
-const imovelAmigavel=ad=>IMOVEIS[(ad.match(/^AD\d+/i)||[''])[0].toUpperCase()]||ad;
 const ORIGEM={ad:URL_PARAMS.get('utm_content')||'',adset:URL_PARAMS.get('utm_term')||'',campaign:URL_PARAMS.get('utm_campaign')||'',source:URL_PARAMS.get('utm_source')||''};
 function esc(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function focusTitle(){main.querySelector('h1,h2')?.focus({preventScroll:true});window.scrollTo({top:0,behavior:'instant'});}
@@ -141,7 +138,7 @@ function render(){
  if(finished){
  const rows=list.map(q=>[LABELS[q.id],q.id]);
  const intro='Olá, Lucas! Preenchi o formulário e gostaria de receber opções de imóveis para o meu perfil.';
- const message=intro+'\n\n'+rows.map(([label,id])=>label+': '+answers[id]).join('\n')+(ORIGEM.ad?'\nImóvel de interesse: '+imovelAmigavel(ORIGEM.ad):'');
+ const message=intro+'\n\n'+rows.map(([label,id])=>label+': '+answers[id]).join('\n');
  const whatsappLink='https://wa.me/'+WHATSAPP_NUMERO+'?text='+encodeURIComponent(message);
  const leadPhoneDigits=(answers.phone||'').replace(/\D/g,'');
  const payload={};for(const id of Object.keys(LABELS))payload[id]=list.some(q=>q.id===id)?answers[id]:'';
